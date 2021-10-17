@@ -1,9 +1,3 @@
-# terraform state file is going to screw me...
-#	resource in a state file will be csoped to a module?
-#		All resource so far were top-level, native to the main directory.
-#		state file will now be scoped to the module, not the main directory
-#		
-
 provider "aws" {
   profile           = "default"
   region            = "${var.AWS_REGION}"
