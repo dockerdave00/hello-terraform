@@ -83,5 +83,3 @@ docker pull davidwnorrisjr/hello-python:latest
 # startup docker instances with docker compose
 echo -e "\n\n****** Bringing up docker-compose ******\n\n"
 docker-compose up --force-recreate --build -d
-
-# small change to trigger version control
