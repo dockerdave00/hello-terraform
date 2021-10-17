@@ -12,7 +12,7 @@ module "ec2" {
   public_subnets    = module.vpc.public_subnets
   vpc_id            = module.vpc.vpc_id
   elasticache_nodes = module.elasticache.elasticache_nodes
-  rds_instances      = module.rds.rds_instances
+  rds_instances     = module.rds.rds_instances
 }
  
  module "elasticache" {
