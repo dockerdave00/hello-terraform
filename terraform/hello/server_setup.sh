@@ -7,8 +7,8 @@ echo -e "\n\n****** Running initial yum update ******\n\n"
 yum update -y
 
 echo "EC2USER_HOME = ${EC2USER_HOME}"
-echo "ELASTICACHE_ENDPOINT = ${ELASTICACHE_ENDPOINT}"
-echo "RDS_ENDPOINT = ${RDS_ENDPOINT}"
+echo "ECACHE_EP = ${ECACHE_EP}"
+echo "RDS_EP = ${RDS_EP}"
 
 # setup .pgpass file
 echo -e "\n\n****** Setting up .pgpass file ******\n\n"
@@ -27,13 +27,13 @@ cat ~root/.pgpass
 echo -e "\n\n****** Setting up production.env file ******\n\n"
 cat << EOT >> ${EC2USER_HOME}/production.env
 #
-POSTGRES_HOST=${RDS_ENDPOINT}
+POSTGRES_HOST=${RDS_EP}
 POSTGRES_PORT=5432
 POSTGRES_DB_NAME=hello
 POSTGRES_USER=postgres
 POSTGRES_AUTH=postgres
 #
-REDIS_HOST=${ELASTICACHE_ENDPOINT}
+REDIS_HOST=${ECACHE_EP}
 REDIS_PORT=6379
 EOT
 chown ec2-user ${EC2USER_HOME}/production.env
@@ -71,10 +71,10 @@ echo -e "\n\n****** Installing postgresql ******\n\n"
 yum install -y postgresql
 
 # create database, table, and data
-psql --host=${RDS_ENDPOINT} --port=5432 --username=postgres -c 'CREATE DATABASE hello;'
-psql --host=${RDS_ENDPOINT} --port=5432 --username=postgres --dbname=hello -c 'CREATE TABLE users (id SERIAL PRIMARY KEY, name varchar, address varchar, phone varchar);'
-psql --host=${RDS_ENDPOINT} --port=5432 --username=postgres --dbname=hello -c "INSERT INTO users(name, address, phone) VALUES ('Teresa', '1234 W Main Street', '123-456-7890');"
-psql --host=${RDS_ENDPOINT} --port=5432 --username=postgres --dbname=hello -c "INSERT INTO users(name, address, phone) VALUES ('Dave', '1234 W Main Street', '123-456-7891');"
+psql --host=${RDS_EP} --port=5432 --username=postgres -c 'CREATE DATABASE hello;'
+psql --host=${RDS_EP} --port=5432 --username=postgres --dbname=hello -c 'CREATE TABLE users (id SERIAL PRIMARY KEY, name varchar, address varchar, phone varchar);'
+psql --host=${RDS_EP} --port=5432 --username=postgres --dbname=hello -c "INSERT INTO users(name, address, phone) VALUES ('Teresa', '1234 W Main Street', '123-456-7890');"
+psql --host=${RDS_EP} --port=5432 --username=postgres --dbname=hello -c "INSERT INTO users(name, address, phone) VALUES ('Dave', '1234 W Main Street', '123-456-7891');"
 
 # pull docker image
 echo -e "\n\n****** Pulling docker image for hello-python ******\n\n"

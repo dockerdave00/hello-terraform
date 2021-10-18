@@ -8,8 +8,11 @@ variable "key_name" {
    default = "dockerdave00_aws_instance_keypair"
 }
 
-variable "elasticache_nodes" {
+variable "user_data" {
 }
 
-variable "rds_instances" {
+variable "latest_ami" {
+}
+
+variable "ec2_instance_type" {
 }

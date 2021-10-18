@@ -1,12 +1,12 @@
 resource "aws_elasticache_cluster" "common" {
   cluster_id           	= "cluster-common"
-  engine               	= "redis"
-  node_type            	= "cache.t2.micro"
-  num_cache_nodes      	= 1
-  parameter_group_name 	= "default.redis6.x"
+  engine               	= var.ecache_engine
+  node_type            	= var.ecache_cache_type
+  num_cache_nodes      	= var.ecache_nodes_qty
+  parameter_group_name 	= var.ecache_param_group_name
   subnet_group_name	= aws_elasticache_subnet_group.common.name
   security_group_ids	= [ aws_security_group.allow_elasticache.id ]
-  engine_version       	= "6.x"
+  engine_version       	= var.ecache_engine_ver
   port                 	= 6379
 
   tags = {

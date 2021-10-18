@@ -10,11 +10,11 @@ resource "aws_db_parameter_group" "common" {
 
 resource "aws_db_instance" "common" {
   identifier			= "db-common"
-  instance_class        	= "db.t2.micro"
-  allocated_storage     	= 10
-  engine                	= "postgres"
-  engine_version        	= "12.8"
-  username              	= "postgres"
+  instance_class        	= var.rds_instance_class
+  allocated_storage     	= var.rds_alloc_storage
+  engine                	= var.rds_engine
+  engine_version        	= var.rds_engine_ver
+  username              	= var.rds_username
   password              	= var.db_password
   db_subnet_group_name		= aws_db_subnet_group.common.name
   vpc_security_group_ids	= [ aws_security_group.allow_rds.id ]

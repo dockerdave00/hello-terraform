@@ -1,6 +1,8 @@
 resource "aws_instance" "app_server" {
-  ami           		= "ami-00dfe2c7ce89a450b"
-  instance_type 		= "t2.micro"
+#  ami           		= "ami-00dfe2c7ce89a450b"
+#  instance_type 		= "t2.micro"
+  ami           		= var.latest_ami
+  instance_type 		= var.ec2_instance_type
   key_name			= var.key_name
   vpc_security_group_ids 	= [ aws_security_group.allow_ssh_http.id ]
   subnet_id 			= var.public_subnets
@@ -10,13 +12,7 @@ resource "aws_instance" "app_server" {
     Name 			= "common-instance"
   }
 
-  user_data			= templatefile("${path.module}/server_setup.sh", 
-				    {
-				      "EC2USER_HOME"         = "/home/ec2-user"
-				      "ELASTICACHE_ENDPOINT" = var.elasticache_nodes
-				      "RDS_ENDPOINT"         = var.rds_instances
-				    }
-				  )
+  user_data			= var.user_data
 }
 
 resource "aws_security_group" "allow_ssh_http" {
