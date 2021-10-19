@@ -1,4 +1,4 @@
-variable "db_subnets" {
+variable "db_subnet" {
 }
 
 variable "vpc_id" {
@@ -20,4 +20,7 @@ variable "rds_engine_ver" {
 }
 
 variable "rds_username" {
+}
+
+variable "rds_security_group" {
 }

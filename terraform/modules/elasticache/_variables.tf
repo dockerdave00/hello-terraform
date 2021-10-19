@@ -1,4 +1,4 @@
-variable "internal_subnets" {
+variable "db_subnet" {
 }
 
 variable "vpc_id" {
@@ -16,4 +16,7 @@ variable "ecache_engine_ver" {
 }
 
 variable "ecache_nodes_qty" {
+}
+
+variable "ecache_security_group" {
 }

@@ -1,4 +1,4 @@
-variable "public_subnets" {
+variable "public_subnet" {
 }
 
 variable "vpc_id" {
@@ -15,4 +15,7 @@ variable "latest_ami" {
 }
 
 variable "ec2_instance_type" {
+}
+
+variable "ec2_security_group" {
 }

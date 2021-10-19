@@ -15,14 +15,19 @@ data "aws_ami" "amazon_linux" {
 
 module "vpc" {
   source                  = "../modules/vpc"
+  vpc_id                  = module.vpc.vpc_id
+  public_subnet           = module.vpc.public_subnet
+  nat_gateway             = module.vpc.nat_gateway
+  internet_gateway        = module.vpc.internet_gateway
 }
 
 module "ec2" {
   source                  = "../modules/ec2"
   latest_ami              = data.aws_ami.amazon_linux.id
   ec2_instance_type       = var.ec2_instance_type
-  public_subnets          = module.vpc.public_subnets
+  public_subnet           = module.vpc.public_subnet
   vpc_id                  = module.vpc.vpc_id
+  ec2_security_group      = module.ec2.ec2_security_group
   user_data               = templatefile("server_setup.sh",
                                           { "EC2USER_HOME" = "/home/ec2-user"
                                             "ECACHE_EP"    = module.elasticache.elasticache_nodes
@@ -36,8 +41,9 @@ module "ec2" {
   ecache_param_group_name = var.ecache_param_group_name
   ecache_engine_ver       = var.ecache_engine_ver
   ecache_nodes_qty        = var.ecache_nodes_qty
-  internal_subnets        = module.vpc.internal_subnets
+  db_subnet               = module.vpc.db_subnet
   vpc_id                  = module.vpc.vpc_id
+  ecache_security_group   = module.elasticache.ecache_security_group
  }
 
 module "rds" {
@@ -47,7 +53,8 @@ module "rds" {
   rds_engine              = var.rds_engine
   rds_engine_ver          = var.rds_engine_ver
   rds_username            = var.rds_username
-  db_subnets              = module.vpc.db_subnets
+  db_subnet               = module.vpc.db_subnet
   vpc_id                  = module.vpc.vpc_id
+  rds_security_group      = module.rds.rds_security_group
   db_password             = var.db_password
 }
