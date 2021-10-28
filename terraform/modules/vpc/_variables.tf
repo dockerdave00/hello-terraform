@@ -1,11 +1,23 @@
 variable "vpc_id" {
-}
-
-variable "public_subnet" {
+  type = string
 }
 
 variable "internet_gateway" {
+  type = string
 }
 
-variable "nat_gateway" {
+variable "db_subnets" {
+  type = map(string)
 }
+
+variable "public_subnets" {
+  type = map(string)
+}
+
+variable "private_subnets" {
+  type = map(string)
+}
+
+# variable "nat_gateway_ids" {
+#   type = map(string)
+# }

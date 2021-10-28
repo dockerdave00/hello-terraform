@@ -1,4 +1,5 @@
-variable "public_subnet" {
+variable "subnet_id" {
+  type = string
 }
 
 variable "vpc_id" {

@@ -17,7 +17,6 @@ resource "aws_db_instance" "common" {
   username              	= var.rds_username
   password              	= var.db_password
   db_subnet_group_name		= aws_db_subnet_group.common.name
-#  vpc_security_group_ids	= [ aws_security_group.allow_rds.id ]
   vpc_security_group_ids	= [ var.rds_security_group ]
   publicly_accessible   	= false
   skip_final_snapshot   	= true
@@ -25,7 +24,7 @@ resource "aws_db_instance" "common" {
 
 resource "aws_db_subnet_group" "common" {
   name       			= "internal-db-common-subnet"
-  subnet_ids 			= [ var.db_subnet[0], var.db_subnet[1] ]
+  subnet_ids 			= flatten([ var.db_subnet_ids ])
 
   tags = {
     Name 			= "DB subnet group"
