@@ -16,6 +16,7 @@ data "aws_ami" "amazon_linux" {
 module "vpc" {
   source                  = "../modules/vpc"
   vpc_id                  = module.vpc.vpc_id
+  cidr_block		  = var.cidr_block
   internet_gateway        = module.vpc.internet_gateway
   db_subnets		  = var.db_subnets
   public_subnets	  = var.public_subnets

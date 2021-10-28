@@ -1,4 +1,23 @@
 aws_region              = "us-east-2"
+cidr_block              = "10.0.0.0/16" 
+
+db_subnets = {
+  "us-east-2a" = "10.0.3.0/24"
+  "us-east-2b" = "10.0.5.0/24"
+  "us-east-2c" = "10.0.7.0/24"
+}
+
+public_subnets = {
+  "us-east-2a" = "10.0.13.0/24"
+  "us-east-2b" = "10.0.15.0/24"
+  "us-east-2c" = "10.0.17.0/24"
+}
+
+private_subnets = {
+  "us-east-2a" = "10.0.23.0/24"
+  "us-east-2b" = "10.0.25.0/24"
+  "us-east-2c" = "10.0.27.0/24"
+}
 
 ec2_instance_type       = "t2.micro"
 

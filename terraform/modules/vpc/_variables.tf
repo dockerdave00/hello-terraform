@@ -2,6 +2,10 @@ variable "vpc_id" {
   type = string
 }
 
+variable "cidr_block" {
+  type = string
+}
+
 variable "internet_gateway" {
   type = string
 }
@@ -17,7 +21,3 @@ variable "public_subnets" {
 variable "private_subnets" {
   type = map(string)
 }
-
-# variable "nat_gateway_ids" {
-#   type = map(string)
-# }
