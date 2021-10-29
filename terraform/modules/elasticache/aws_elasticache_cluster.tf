@@ -17,7 +17,7 @@ resource "aws_elasticache_cluster" "common" {
 
 resource "aws_elasticache_subnet_group" "db" {
   name			= "cache-db-subnet"
-  subnet_ids		= [ var.db_subnet[0] ]
+  subnet_ids		= flatten([ var.db_subnet_ids ])
 
   tags = {
     Name		= "Elasticache subnet group"

@@ -7,10 +7,11 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route_table" "private" {
+  for_each		 = var.private_subnets
   vpc_id                 = var.vpc_id
 
   tags = {
-    Name                 = "private"
+    Name                 = "private-${each.key}"
   }
 }
 
@@ -21,19 +22,20 @@ resource "aws_route" "public-igw" {
 }
 
 resource "aws_route" "private-ngw" {
-  route_table_id         = aws_route_table.private.id
+  for_each		 = var.private_subnets
+  route_table_id         = aws_route_table.private[each.key].id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = var.nat_gateway
+  gateway_id             = aws_nat_gateway.ngw[each.key].id
 }
 
 resource "aws_route_table_association" "public-subnet" {
-  subnet_id              = aws_subnet.subnet-public.id
+  for_each		 = var.public_subnets
+  subnet_id              = aws_subnet.subnet-public[each.key].id
   route_table_id         = aws_route_table.public.id
-
 } 
 
 resource "aws_route_table_association" "private-subnet" {
-  subnet_id              = aws_subnet.subnet-private.id
-  route_table_id         = aws_route_table.private.id
-
+  for_each		 = aws_subnet.subnet-private
+  subnet_id              = aws_subnet.subnet-private[each.key].id
+  route_table_id         = aws_route_table.private[each.key].id
 } 
