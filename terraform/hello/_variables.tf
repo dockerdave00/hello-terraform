@@ -72,3 +72,16 @@ variable "public_subnets" {
 variable "private_subnets" {
   type = map
 }
+
+variable "elb_name" {
+  type = string
+}
+
+variable "ec2_instance_port" {
+  type = string
+}
+
+variable "elb_health_check_target" {
+  type = string
+}
+

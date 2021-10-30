@@ -20,6 +20,7 @@ private_subnets = {
 }
 
 ec2_instance_type       = "t2.micro"
+ec2_instance_port       = 80
 
 ecache_engine           = "redis"
 ecache_cache_type       = "cache.t2.micro"
@@ -32,3 +33,6 @@ rds_alloc_storage       = 10
 rds_engine              = "postgres"
 rds_engine_ver          = "12.8"
 rds_username            = "postgres"
+
+elb_name                = "terraform-elb"
+elb_health_check_target = "http:80/"

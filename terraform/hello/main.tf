@@ -23,6 +23,16 @@ module "vpc" {
   private_subnets	  = var.private_subnets
 }
 
+module "elb" {
+  source                  = "../modules/elb"
+  vpc_id                  = module.vpc.vpc_id
+  elb_name		  = var.elb_name
+  public_subnet_ids       = module.vpc.public_subnet_ids
+  aws_ec2_instance_id     = module.ec2.aws_ec2_instance_id
+  ec2_instance_port       = var.ec2_instance_port
+  elb_health_check_target = var.elb_health_check_target
+}
+
 module "ec2" {
   source                  = "../modules/ec2"
   latest_ami              = data.aws_ami.amazon_linux.id
@@ -30,10 +40,10 @@ module "ec2" {
   vpc_id                  = module.vpc.vpc_id
   ec2_security_group      = module.ec2.ec2_security_group
   subnet_id    		  = module.vpc.public_subnet_ids[0]
-  user_data               = templatefile("server_setup.sh",
-                                          { "EC2USER_HOME" = "/home/ec2-user"
-                                            "ECACHE_EP"    = module.elasticache.elasticache_nodes
-                                            "RDS_EP"       = module.rds.rds_instances })
+  user_data               = templatefile("server_setup.sh", {
+                              "EC2USER_HOME" = "/home/ec2-user"
+                              "ECACHE_EP"    = module.elasticache.elasticache_nodes
+                              "RDS_EP"       = module.rds.rds_instances })
 }
  
 module "elasticache" {
