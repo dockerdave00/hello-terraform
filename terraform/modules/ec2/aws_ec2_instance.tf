@@ -6,8 +6,6 @@ resource "aws_instance" "app_server" {
   subnet_id 			= var.subnet_id
 
   tags = {
-    Name 			= "common-instance"
+    Name 			= "generic-instance"
   }
-
-  user_data			= var.user_data
 }

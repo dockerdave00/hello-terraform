@@ -23,6 +23,20 @@ module "vpc" {
   private_subnets	  = var.private_subnets
 }
 
+module "asg" {
+  source 		  = "../modules/asg"
+  elb_name		  = var.elb_name
+  private_subnet_ids       = module.vpc.private_subnet_ids
+  latest_ami              = data.aws_ami.amazon_linux.id
+  vpc_id                  = module.vpc.vpc_id
+  asg_instance_type       = var.ec2_instance_type
+  asg_security_group      = module.asg.asg_security_group
+  user_data               = templatefile("server_setup.sh", {
+                              "EC2USER_HOME" = "/home/ec2-user"
+                              "ECACHE_EP"    = module.elasticache.elasticache_nodes
+                              "RDS_EP"       = module.rds.rds_instances })
+}
+
 module "elb" {
   source                  = "../modules/elb"
   vpc_id                  = module.vpc.vpc_id
@@ -40,10 +54,6 @@ module "ec2" {
   vpc_id                  = module.vpc.vpc_id
   ec2_security_group      = module.ec2.ec2_security_group
   subnet_id    		  = module.vpc.public_subnet_ids[0]
-  user_data               = templatefile("server_setup.sh", {
-                              "EC2USER_HOME" = "/home/ec2-user"
-                              "ECACHE_EP"    = module.elasticache.elasticache_nodes
-                              "RDS_EP"       = module.rds.rds_instances })
 }
  
 module "elasticache" {

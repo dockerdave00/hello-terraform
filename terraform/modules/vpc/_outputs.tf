@@ -1,5 +1,5 @@
 output "vpc_id" {
-  value = aws_vpc.common-vpc.id
+  value = aws_vpc.generic-vpc.id
 }
 
 output "internet_gateway" {
@@ -14,6 +14,6 @@ output "public_subnet_ids" {
   value = [ for subnet in aws_subnet.subnet-public: subnet.id]
 }
 
-# output "private_subnet_ids" {
-#   value = [ for subnet in aws_subnet.subnet-private: subnet.id]
-# }
+output "private_subnet_ids" {
+  value = [ for subnet in aws_subnet.subnet-private: subnet.id]
+}

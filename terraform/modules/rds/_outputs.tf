@@ -1,5 +1,5 @@
 output "rds_instances" {
-  value = aws_db_instance.common.address
+  value = aws_db_instance.generic.address
 }
 
 output "rds_security_group" {
