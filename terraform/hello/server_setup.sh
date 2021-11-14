@@ -47,6 +47,7 @@ amazon-linux-extras install -y docker
 usermod -a -G docker ec2-user
 systemctl start docker
 
+set -x 
 # install and configure docker-compose
 echo -e "\n\n****** Installing and configuring docker-compose ******\n\n"
  curl -L https://github.com/docker/compose/releases/download/1.21.0/docker-compose-`uname -s`-`uname -m` | tee /usr/local/bin/docker-compose > /dev/null
@@ -58,6 +59,8 @@ ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 echo -e "\n\n****** Copying in docker-compose.yaml to ec2-user home directory******\n\n"
 # copying in docker-compose.yaml from github repo
 curl -sSL https://raw.githubusercontent.com/dockerdave00/hello-python/main/docker-compose.yaml > ~ec2-user/docker-compose.yaml
+
+set +x
 
 # install redis-stable
 # echo -e "\n\n****** Installing redis-stable ******\n\n"
@@ -88,4 +91,4 @@ docker pull davidwnorrisjr/hello-python:latest
 
 # startup docker instances with docker compose
 echo -e "\n\n****** Bringing up docker-compose ******\n\n"
-~ec2-user/docker-compose up --force-recreate --build -d
+/usr/bin/docker-compose -f /home/ec2-user/docker-compose.yaml up --force-recreate --build -d
