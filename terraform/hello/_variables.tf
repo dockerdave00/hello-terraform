@@ -1,12 +1,11 @@
 variable "db_password" {
-  type = string
   description = "RDS root user password"
+  type = string
   sensitive   = true
 }
 
 variable "key_name" {
   type = string
-  default = "dockerdave00_aws_instance_keypair"
 }
 
 variable "aws_region" {
@@ -85,3 +84,6 @@ variable "elb_health_check_target" {
   type = string
 }
 
+# variable "loadbalancer_dns_name" {
+#   type = string
+# }

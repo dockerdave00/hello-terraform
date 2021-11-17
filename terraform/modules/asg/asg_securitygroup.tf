@@ -1,10 +1,10 @@
-resource "aws_security_group" "allow_ssh_http" {
-  name                          = "allow_ssh_http_sg"
+resource "aws_security_group" "allow_ssh_http_for_asg" {
+  name                          = "allow_ssh_http_sg_for_asg"
   description                   = "Allow SSH and HTTP inbound connections"
   vpc_id                        = var.vpc_id
 
   tags = {
-    Name                        = "allow_ssh_http_sg"
+    Name                        = "allow_ssh_http_sg_for_asg"
   }
 }
 
@@ -14,7 +14,7 @@ resource "aws_security_group_rule" "allow_ssh" {
   to_port                     = 22
   protocol                    = "tcp"
   cidr_blocks                 = ["0.0.0.0/0"]
-  security_group_id	      = aws_security_group.allow_ssh_http.id
+  security_group_id	      = aws_security_group.allow_ssh_http_for_asg.id
 }
 
 resource "aws_security_group_rule" "allow_http" {
@@ -23,7 +23,7 @@ resource "aws_security_group_rule" "allow_http" {
   to_port                     = 80
   protocol                    = "tcp"
   cidr_blocks                 = ["0.0.0.0/0"]
-  security_group_id	      = aws_security_group.allow_ssh_http.id
+  security_group_id	      = aws_security_group.allow_ssh_http_for_asg.id
 }
 
 resource "aws_security_group_rule" "allow_all" {
@@ -32,5 +32,5 @@ resource "aws_security_group_rule" "allow_all" {
   to_port                     = 0
   protocol                    = -1
   cidr_blocks                 = ["0.0.0.0/0"]
-  security_group_id	      = aws_security_group.allow_ssh_http.id
+  security_group_id	      = aws_security_group.allow_ssh_http_for_asg.id
 }

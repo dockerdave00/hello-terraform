@@ -1,13 +1,15 @@
 resource "aws_placement_group" "asg" {
-  name                       = "terraform-asg-pg"
+  name                       = "terraform-asg"
   strategy                   = "partition"
+  partition_count            = 2
 }
 
 resource "aws_launch_template" "asg" {
   name_prefix                = "terraform-asg-lt"
   image_id		     = var.latest_ami
   instance_type              = var.asg_instance_type
-  vpc_security_group_ids    = [ var.asg_security_group ]
+  key_name		     = var.key_name
+  vpc_security_group_ids     = [ var.asg_security_group_ssh_http ]
   user_data		     = "${base64encode(var.user_data)}"
 }
 

@@ -18,10 +18,14 @@ variable "user_data" {
   type = string
 }
 
-variable "asg_security_group" {
+variable "asg_security_group_ssh_http" {
   type = string
 }
 
 variable "vpc_id" {
+  type = string
+}
+
+variable "key_name" {
   type = string
 }

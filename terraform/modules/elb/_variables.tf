@@ -14,6 +14,10 @@ variable "public_subnet_ids" {
   type = list(string)
 }
 
+variable "elb_security_group_http_only" {
+  type = list(string)
+}
+
 variable "ec2_instance_port" {
   type = string
 }

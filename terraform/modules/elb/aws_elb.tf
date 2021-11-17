@@ -1,6 +1,7 @@
 resource "aws_elb" "elb" {
   name                  = var.elb_name
   subnets		= var.public_subnet_ids
+  security_groups       = var.elb_security_group_http_only
 
   listener {
     instance_port       = var.ec2_instance_port

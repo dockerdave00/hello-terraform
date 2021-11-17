@@ -1,82 +1,86 @@
 provider "aws" {
-  profile                 = "default"
-  region                  = var.aws_region
+  profile                        = "default"
+  region                         = var.aws_region
 }
 
 data "aws_ami" "amazon_linux" {
-  most_recent             = true
-  owners                  = ["amazon"]
+  most_recent                    = true
+  owners                         = ["amazon"]
 
   filter {
-    name                  = "name"
-    values                = ["amzn2-ami-hvm-*-x86_64-gp2"]
+    name                         = "name"
+    values                       = ["amzn2-ami-hvm-*-x86_64-gp2"]
   }
 }
 
 module "vpc" {
-  source                  = "../modules/vpc"
-  vpc_id                  = module.vpc.vpc_id
-  cidr_block		  = var.cidr_block
-  internet_gateway        = module.vpc.internet_gateway
-  db_subnets		  = var.db_subnets
-  public_subnets	  = var.public_subnets
-  private_subnets	  = var.private_subnets
+  source                         = "../modules/vpc"
+  vpc_id                         = module.vpc.vpc_id
+  cidr_block		         = var.cidr_block
+  internet_gateway               = module.vpc.internet_gateway
+  db_subnets		         = var.db_subnets
+  public_subnets	         = var.public_subnets
+  private_subnets	         = var.private_subnets
 }
 
 module "asg" {
-  source 		  = "../modules/asg"
-  elb_name		  = var.elb_name
-  private_subnet_ids       = module.vpc.private_subnet_ids
-  latest_ami              = data.aws_ami.amazon_linux.id
-  vpc_id                  = module.vpc.vpc_id
-  asg_instance_type       = var.ec2_instance_type
-  asg_security_group      = module.asg.asg_security_group
-  user_data               = templatefile("server_setup.sh", {
-                              "EC2USER_HOME" = "/home/ec2-user"
-                              "ECACHE_EP"    = module.elasticache.elasticache_nodes
-                              "RDS_EP"       = module.rds.rds_instances })
+  source 		         = "../modules/asg"
+  private_subnet_ids             = module.vpc.private_subnet_ids
+  latest_ami                     = data.aws_ami.amazon_linux.id
+  vpc_id                         = module.vpc.vpc_id
+  elb_name		         = var.elb_name
+  asg_instance_type              = var.ec2_instance_type
+  asg_security_group_ssh_http    = module.asg.ec2_security_group_ssh_http_for_asg
+  key_name                       = var.key_name
+  user_data                      = templatefile("server_setup.sh", {
+                                     "EC2USER_HOME" = "/home/ec2-user"
+                                     "ECACHE_EP"    = module.elasticache.elasticache_nodes
+                                     "RDS_EP"       = module.rds.rds_instances })
 }
 
 module "elb" {
-  source                  = "../modules/elb"
-  vpc_id                  = module.vpc.vpc_id
-  elb_name		  = var.elb_name
-  public_subnet_ids       = module.vpc.public_subnet_ids
-  aws_ec2_instance_id     = module.ec2.aws_ec2_instance_id
-  ec2_instance_port       = var.ec2_instance_port
-  elb_health_check_target = var.elb_health_check_target
+  source                         = "../modules/elb"
+  vpc_id                         = module.vpc.vpc_id
+  elb_name		         = var.elb_name
+  public_subnet_ids              = module.vpc.public_subnet_ids
+  aws_ec2_instance_id            = module.bastion.aws_ec2_instance_id
+  ec2_instance_port              = var.ec2_instance_port
+  elb_security_group_http_only   = [ module.elb.elb_security_group_http_only ]
+  elb_health_check_target        = var.elb_health_check_target
 }
 
-module "ec2" {
-  source                  = "../modules/ec2"
-  latest_ami              = data.aws_ami.amazon_linux.id
-  ec2_instance_type       = var.ec2_instance_type
-  vpc_id                  = module.vpc.vpc_id
-  ec2_security_group      = module.ec2.ec2_security_group
-  subnet_id    		  = module.vpc.public_subnet_ids[0]
+module "bastion" {
+  source                         = "../modules/bastion"
+  latest_ami                     = data.aws_ami.amazon_linux.id
+  ec2_instance_type              = var.ec2_instance_type
+  vpc_id                         = module.vpc.vpc_id
+  ec2_security_group_for_bastion = module.bastion.ec2_security_group_for_bastion
+  subnet_id    		         = module.vpc.public_subnet_ids[0]
+  key_name                       = var.key_name
+  public_ip_address              = true
 }
  
 module "elasticache" {
-  source                  = "../modules/elasticache"
-  ecache_engine           = var.ecache_engine
-  ecache_cache_type       = var.ecache_cache_type
-  ecache_param_group_name = var.ecache_param_group_name
-  ecache_engine_ver       = var.ecache_engine_ver
-  ecache_nodes_qty        = var.ecache_nodes_qty
-  db_subnet_ids           = module.vpc.db_subnet_ids
-  vpc_id                  = module.vpc.vpc_id
-  ecache_security_group   = module.elasticache.ecache_security_group
+  source                         = "../modules/elasticache"
+  ecache_engine                  = var.ecache_engine
+  ecache_cache_type              = var.ecache_cache_type
+  ecache_param_group_name        = var.ecache_param_group_name
+  ecache_engine_ver              = var.ecache_engine_ver
+  ecache_nodes_qty               = var.ecache_nodes_qty
+  db_subnet_ids                  = module.vpc.db_subnet_ids
+  vpc_id                         = module.vpc.vpc_id
+  ecache_security_group          = module.elasticache.ecache_security_group
 }
 
 module "rds" {
-  source                  = "../modules/rds"
-  rds_instance_class      = var.rds_instance_class
-  rds_alloc_storage       = var.rds_alloc_storage
-  rds_engine              = var.rds_engine
-  rds_engine_ver          = var.rds_engine_ver
-  rds_username            = var.rds_username
-  db_subnet_ids           = module.vpc.db_subnet_ids
-  vpc_id                  = module.vpc.vpc_id
-  rds_security_group      = module.rds.rds_security_group
-  db_password             = var.db_password
+  source                         = "../modules/rds"
+  rds_instance_class             = var.rds_instance_class
+  rds_alloc_storage              = var.rds_alloc_storage
+  rds_engine                     = var.rds_engine
+  rds_engine_ver                 = var.rds_engine_ver
+  rds_username                   = var.rds_username
+  db_subnet_ids                  = module.vpc.db_subnet_ids
+  vpc_id                         = module.vpc.vpc_id
+  rds_security_group             = module.rds.rds_security_group
+  db_password                    = var.db_password
 }

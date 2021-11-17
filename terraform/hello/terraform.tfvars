@@ -19,6 +19,7 @@ private_subnets = {
   "us-east-2c" = "10.0.27.0/24"
 }
 
+key_name                = "dockerdave00_aws_instance_keypair"
 ec2_instance_type       = "t2.micro"
 ec2_instance_port       = 80
 
@@ -33,6 +34,7 @@ rds_alloc_storage       = 10
 rds_engine              = "postgres"
 rds_engine_ver          = "12.8"
 rds_username            = "postgres"
+db_password		= "postgres"
 
 elb_name                = "terraform-elb"
-elb_health_check_target = "http:80/"
+elb_health_check_target = "http:80/hello"

@@ -7,9 +7,9 @@ resource "aws_internet_gateway" "igw" {
 }
 
 resource "aws_nat_gateway" "ngw" {
-  for_each	    = var.private_subnets
-  subnet_id         = aws_subnet.subnet-private[each.key].id
-  connectivity_type = "private"
+  for_each	    = var.public_subnets
+  subnet_id         = aws_subnet.subnet-public[each.key].id
+  allocation_id     = aws_eip.ngw[each.key].id
 
   tags = {
     Name            = "nat-gateway-${each.key}"

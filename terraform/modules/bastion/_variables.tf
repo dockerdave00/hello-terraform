@@ -7,7 +7,7 @@ variable "vpc_id" {
 }
 
 variable "key_name" {
-   default = "dockerdave00_aws_instance_keypair"
+   type = string
 }
 
 variable "latest_ami" {
@@ -18,6 +18,10 @@ variable "ec2_instance_type" {
   type = string
 }
 
-variable "ec2_security_group" {
+variable "ec2_security_group_for_bastion" {
   type = string
+}
+
+variable "public_ip_address" {
+  type = bool
 }
