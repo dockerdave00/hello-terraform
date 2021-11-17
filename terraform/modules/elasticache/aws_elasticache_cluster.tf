@@ -1,5 +1,5 @@
-resource "aws_elasticache_cluster" "common" {
-  cluster_id           	= "cluster-common"
+resource "aws_elasticache_cluster" "generic" {
+  cluster_id           	= "cluster-generic"
   engine               	= var.ecache_engine
   node_type            	= var.ecache_cache_type
   num_cache_nodes      	= var.ecache_nodes_qty
@@ -10,7 +10,7 @@ resource "aws_elasticache_cluster" "common" {
   port                 	= 6379
 
   tags = {
-    name                = "common-elasticache-cluster"
+    name                = "generic-elasticache-cluster"
   }
 
 }
